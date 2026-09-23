@@ -121,6 +121,8 @@ class BiwaSynthesizer {
   constructor() {
     this.ctx = null;
     this.enabled = true;
+    this.droneOsc = null;
+    this.droneGain = null;
   }
 
   init() {
@@ -130,6 +132,42 @@ class BiwaSynthesizer {
     }
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
+    }
+  }
+
+  startAmbientDrone() {
+    if (!this.enabled || this.droneOsc) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      this.droneGain = this.ctx.createGain();
+      this.droneGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+
+      this.droneOsc = this.ctx.createOscillator();
+      this.droneOsc.type = 'sine';
+      this.droneOsc.frequency.setValueAtTime(55, this.ctx.currentTime); // Low A1 resonance
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(110, this.ctx.currentTime);
+
+      this.droneOsc.connect(filter);
+      filter.connect(this.droneGain);
+      this.droneGain.connect(this.ctx.destination);
+      this.droneOsc.start();
+    } catch (e) {
+      // Audio autoplay policy fallback
+    }
+  }
+
+  stopAmbientDrone() {
+    if (this.droneOsc) {
+      try {
+        this.droneOsc.stop();
+        this.droneOsc.disconnect();
+      } catch (e) {}
+      this.droneOsc = null;
     }
   }
 
@@ -440,6 +478,7 @@ function lockPointer() {
   document.body.requestPointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock;
   document.body.requestPointerLock();
   biwa.init();
+  biwa.startAmbientDrone();
 }
 
 startBtn.addEventListener('click', lockPointer);
@@ -449,6 +488,7 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement === document.body) {
     isLocked = true;
     blocker.style.display = 'none';
+    biwa.startAmbientDrone();
   } else {
     isLocked = false;
     blocker.style.display = 'flex';
@@ -478,6 +518,11 @@ const soundBtn = document.getElementById('btn-sound');
 soundBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   biwa.enabled = !biwa.enabled;
+  if (biwa.enabled && isLocked) {
+    biwa.startAmbientDrone();
+  } else {
+    biwa.stopAmbientDrone();
+  }
   soundBtn.textContent = biwa.enabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
 });
 
