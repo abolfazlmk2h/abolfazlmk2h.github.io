@@ -1,0 +1,27 @@
+name: Web Validation & Pages Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: HTML5 & Assets Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Web Core Files
+        run: |
+          test -f index.html || { echo "index.html missing"; exit 1; }
+          test -f style.css || { echo "style.css missing"; exit 1; }
+          test -f game.js || { echo "game.js missing"; exit 1; }
+          echo "All core game simulation files are present and verified!"
+
+      - name: Check JavaScript Syntax
+        run: |
+          node -c game.js
+          echo "game.js syntax check passed!"
