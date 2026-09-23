@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mugenjō (無限城) — Demon Slayer 3D Infinity Castle Simulator</title>
+  <meta name="description" content="Interactive 3D WebGL simulation of the Demon Slayer Infinity Castle (Mugenjo) with shifting architecture, non-Euclidean staircases, and Nakime's biwa mechanics.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Noto+Serif+JP:wght@600;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Three.js & Controls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <!-- 3D Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Anime Japanese HUD Overlay -->
+  <div id="hud">
+    <div class="top-banner">
+      <div class="kanji-title">無限城</div>
+      <div class="sub-title">MUGENJŌ &middot; INFINITY CASTLE</div>
+    </div>
+
+    <div class="status-panel">
+      <div class="stat-item">
+        <span class="stat-label">DEPTH:</span>
+        <span id="depth-meter" class="stat-val">-142 m</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">BIWA SHIFTS:</span>
+        <span id="shift-count" class="stat-val">0</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">STAMINA:</span>
+        <div class="stamina-bar-wrap">
+          <div id="stamina-bar" class="stamina-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crosshair -->
+    <div id="crosshair"></div>
+
+    <!-- Action Prompt Overlay -->
+    <div id="action-hint">Press <strong>[B]</strong> or click <strong>STRUM BIWA</strong> to shift the Castle</div>
+
+    <!-- Bottom Controls Bar -->
+    <div class="controls-bottom">
+      <button id="btn-biwa" class="hud-btn glow-btn">
+        <span class="btn-kanji">鳴</span> STRUM BIWA [B]
+      </button>
+      <button id="btn-dash" class="hud-btn">
+        <span class="btn-kanji">迅</span> SLAYER DASH [SHIFT]
+      </button>
+      <button id="btn-sound" class="hud-btn hud-btn-sm">
+        🔊 AUDIO: ON
+      </button>
+    </div>
+  </div>
+
+  <!-- Start / Instructions Modal -->
+  <div id="blocker">
+    <div id="instructions">
+      <div class="modal-kanji">鬼滅の刃 &bull; 無限城</div>
+      <h1 class="modal-title">DEMON SLAYER: INFINITY CASTLE</h1>
+      <p class="modal-subtitle">Dimensional Shifting 3D Simulator</p>
+      
+      <div class="instruction-grid">
+        <div class="ins-card">
+          <span class="key-badge">W A S D</span>
+          <span class="ins-desc">Walk through corridors</span>
+        </div>
+        <div class="ins-card">
+          <span class="key-badge">MOUSE</span>
+          <span class="ins-desc">Look around in 360&deg;</span>
+        </div>
+        <div class="ins-card">
+          <span class="key-badge">SPACE</span>
+          <span class="ins-desc">Jump onto platforms</span>
+        </div>
+        <div class="ins-card">
+          <span class="key-badge">SHIFT</span>
+          <span class="ins-desc">Thunder Breathing Dash</span>
+        </div>
+        <div class="ins-card highlight">
+          <span class="key-badge">[B] KEY</span>
+          <span class="ins-desc">Nakime's Biwa Strum &amp; Room Shift</span>
+        </div>
+      </div>
+
+      <button id="start-btn" class="start-btn">ENTER INFINITY CASTLE</button>
+      <p class="click-note">Click anywhere inside to engage 3D camera</p>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
